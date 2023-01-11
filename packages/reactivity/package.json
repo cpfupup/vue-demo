@@ -1,0 +1,19 @@
+{
+  "name": "@vue/reactivity",
+  "version": "1.0.0",
+  "_main": "node端默认引用main",
+  "main": "index.js",
+  "_module": "es模块或者webpack引用module",
+  "module": "dist/reactivity.esm-bundler.js",
+  "license": "MIT",
+  "buildOptions": {
+    "_name": "希望我们全局名字为VueReactivity",
+    "name": "VueReactivity",
+    "_formats": "",
+    "formats": [
+      "cjs",
+      "esm-bundler",
+      "global"
+    ]
+  }
+}

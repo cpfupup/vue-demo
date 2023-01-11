@@ -1,0 +1,19 @@
+{
+  "name": "@vue/shared",
+  "version": "1.0.0",
+  "_main": "node端默认引用main,给commonjs使用 ",
+  "main": "index.js",
+  "_module": "es模块或者webpack引用module",
+  "module": "dist/shared.esm-bundler.js",
+  "license": "MIT",
+  "_buileOptions": "自定义接口",
+  "buildOptions": {
+    "_name": "希望我们全局名字为VueShared",
+    "name": "VueShared",
+    "_formats": "支持什么类型,cjs->commonjs esm->module",
+    "formats": [
+      "cjs",
+      "esm-bundler"
+    ]
+  }
+}
