@@ -19,13 +19,13 @@ const name = path.basename(packageDir); //取文件名
 
 //对打包类型先做一个映射表，根据提供的formats来格式化需要打包的内容
 const outputConfig = {
-  'esm-bunlder': {
-    file: resolve(`dist/${name}.esm-bundler.js`),
-    format: 'es',//告诉是es6
+  'esm-bundler': {
+    file: resolve(`dist/${name}.esm-bundler.js`),//告诉是es6
+    format: 'es'
   },
-  'csj': {
-    file: resolve(`dist/${name}.cjs.js`),
-    format: 'cjs'//告诉是node
+  'cjs': {
+    file: resolve(`dist/${name}.cjs.js`),//告诉是node
+    format: 'cjs'
   },
   'global': {
     file: resolve(`dist/${name}.global.js`),
