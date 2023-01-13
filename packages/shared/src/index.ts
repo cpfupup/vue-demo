@@ -1,8 +1,1 @@
-//这里是入口文件
-const shared = {
-
-}
-
-export {
-  shared
-}
+export const isObject = (value) => typeof value === 'object' && value !== null //判断是否为对象且不为空
