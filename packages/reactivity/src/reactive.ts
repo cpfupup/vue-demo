@@ -1,11 +1,12 @@
 import { isObject } from "@vue/shared"
 
-// 实现响应式
-const mutableHandlers = {}
-const shallowReactiveHandlers = {}
-const readonlyHanlers = {}
-const shallowReadonlyHandlers = {}
-
+// 导入响应式逻辑
+import {
+  mutableHandlers,
+  shallowReactiveHandlers,
+  readonlyHanlers,
+  shallowReadonlyHandlers
+} from './baseHandlers'
 
 export function reactive(target) {//响应式
   return createReactiveObjet(target, false, mutableHandlers)
