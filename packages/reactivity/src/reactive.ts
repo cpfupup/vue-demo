@@ -34,6 +34,14 @@ export function createReactiveObjet(target, isReadonly, baseHandlers) {
 
   // 如果某个对象已经被代理过了，就不需要再次代理 可能一个对象 被代理是深度 又被仅读代理了
   const proxyMap = isReadonly ? readonlyMap : reactiveMap//如果是只读就由只读来代理
-  const proxy = new Proxy(target, baseHandlers)
+
+  //判断是否被代理过 如果代理过直接返回
+  const exisitProxy = proxyMap.get(target)
+  if (exisitProxy) {
+    return exisitProxy
+  }
+
+  const proxy = new Proxy(target, baseHandlers);
+  proxyMap.set(target, proxy);//将要代理的对象和对应代理结果缓存起来
   return proxy
 }
