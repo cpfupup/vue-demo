@@ -4,6 +4,7 @@
 
 import { extend, isObject } from "@vue/shared"
 import { track } from "./effect"
+import { TrackOptypes } from "./operators"
 import { reactive, readonly } from "./reactive"
 
 
@@ -43,7 +44,7 @@ function createGetter(isReadonly = false, shallow = false) {// 拦截获取功�
 
     if (!isReadonly) {
       // 收集依赖，数据变化后更新对应的视图
-      track(target, key)// 收集对象和具体的属性
+      track(target, TrackOptypes.GET, key)// 收集对象，对象的操作和具体的属性
       console.log('执行effect时会取值', '收集effect');
 
     }
