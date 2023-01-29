@@ -4,3 +4,7 @@ export const isArray = Array.isArray
 export const isFunction = (value) => typeof value === 'function'
 export const isNumber = (value) => typeof value === 'number'
 export const isString = (value) => typeof value === 'string'
+export const isIntegerKey = (key) => parseInt(key) + '' === key
+export const hasOwn = (target, key) => hasOwnProperty.call(target, key)
+export const haschanged = (oldvalue, value) => oldvalue !== value
+let hasOwnProperty = Object.prototype.hasOwnProperty

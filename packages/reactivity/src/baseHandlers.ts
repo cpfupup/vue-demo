@@ -2,7 +2,7 @@
 // 是否为仅读， 仅读属性set时会异常
 // 是否为深度
 
-import { extend, isObject } from "@vue/shared"
+import { extend, haschanged, hasOwn, isArray, isIntegerKey, isObject } from "@vue/shared"
 import { track } from "./effect"
 import { TrackOptypes } from "./operators"
 import { reactive, readonly } from "./reactive"
@@ -60,7 +60,18 @@ function createGetter(isReadonly = false, shallow = false) {// 拦截获取功�
 
 function createSetter(shallow = false) {// 拦截设置功能
   return function set(target, key, value, receiver) {// 目标 key 要设置的值 代理对象本身 
+    // 当数据更新时，通知对应属性的effect重新执行
+    const oldValue = target[key]
+    let hadKey = isArray(target) && isIntegerKey(key) ? Number(key) < target.length : hasOwn(target, key)// 判断值是新增的还是已经拥有的
+
     const result = Reflect.set(target, key, value, receiver);
+    // 我们要区分是新增还是修改的 vue2中无法监控更改索引，无法监控数组的长度变化 -》hack的方法 需要特殊的处理
+    if (!hadKey) {
+      //新增
+    } else if (haschanged(oldValue, value)) {
+      //修改
+    }
+
     return result
   }
 }
