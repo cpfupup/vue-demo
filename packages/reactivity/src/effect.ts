@@ -26,6 +26,7 @@ function creatReactiveEffect(fn, options) {
 }
 const targetMap = new WeakMap();
 //让某个对象中的属性 收集他当前对应的effect函数
+
 export function track(target, type, key) {
   // activeEffect // 可以拿到当前的effect
 
@@ -44,8 +45,7 @@ export function track(target, type, key) {
     dep.add(activeEffect)
   }
 }
-//以上是effect逻辑
-//以上是trigger逻辑
+
 
 export function effect(fn, options: any = {}) { // 第一个参数为要运行的方法，第二个参数为是否立即执行选项
   // 需要将这个effect变成响应的effect，可以做到数据变化重新执行
@@ -58,6 +58,7 @@ export function effect(fn, options: any = {}) { // 第一个参数为要运行�
 
   return effect;
 }
+//以上是effect逻辑
 
 //找属性对应的effect 让其执行（数组，对象）
 export function trigger(target, type, key?, newValue?, oldValue?) {
@@ -99,3 +100,4 @@ export function trigger(target, type, key?, newValue?, oldValue?) {
 
   effects.forEach((effect: any) => effect())
 }
+//以上是trigger逻辑
