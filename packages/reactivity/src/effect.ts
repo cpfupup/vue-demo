@@ -1,5 +1,7 @@
-let uid = 0;// effect的唯一标识
-let activeEffect// 存储当前的effect
+import { isArray } from "@vue/shared";
+
+let uid = 0; // effect的唯一标识
+let activeEffect // 存储当前的effect
 const effectStack = []// 用栈出入保证当前effect是正确的顺序
 
 function creatReactiveEffect(fn, options) {
@@ -8,16 +10,16 @@ function creatReactiveEffect(fn, options) {
       try {
         effectStack.push(effect)
         activeEffect = effect;
-        fn()// 函数执行时会取值 会执行get方法
+        fn() // 函数执行时会取值 会执行get方法
       } finally {
-        effectStack.pop()// 出栈
-        activeEffect = effectStack[effectStack.length - 1]// 指针指向前一个effect
+        effectStack.pop() // 出栈
+        activeEffect = effectStack[effectStack.length - 1] // 指针指向前一个effect
       }
     }
   }
   effect.id = uid++; // 制作一个effect标识，用于区分effect
   effect._isEffect = true;// 用于标识这个是响应式effect 
-  effect.raw = fn;// 记录对应的原函数
+  effect.raw = fn; // 记录对应的原函数
   effect.options = options //保存用户的属性 
   return effect;
 }
@@ -44,17 +46,39 @@ export function track(target, type, key) {
 //以上是effect逻辑
 //以上是trigger逻辑
 
-export function effect(fn, options: any = {}) {// 第一个参数为要运行的方法，第二个参数为是否立即执行选项
+export function effect(fn, options: any = {}) { // 第一个参数为要运行的方法，第二个参数为是否立即执行选项
   // 需要将这个effect变成响应的effect，可以做到数据变化重新执行
 
   const effect = creatReactiveEffect(fn, options);
-  if (!options.lazy) {// 默认的effect会先执行
-    effect();// 响应式的effect默认会先执行一次
+  if (!options.lazy) { // 默认的effect会先执行
+    effect(); // 响应式的effect默认会先执行一次
 
   }
 
   return effect;
 }
 export function trigger(target, type, key?, newValue?, oldValue?) {
+  // 如果这个属性没有收集过effect，不需要任何操作
+  const depsMap = targetMap.get(target)
+  if (!depsMap) return
+  const effects = new Set()
 
+  const add = (effectsToAdd) => {
+    if (effectsToAdd) {
+      effectsToAdd.forEach(effect => effects.add(effect))
+    }
+  }
+  // 要将所有要执行的effect存储到一个新的集合中，最终一起执行
+
+  // 1.看修改的是不是数组的长度， 因为改长度影响比较大
+  if (key === 'length' && isArray(target)) {
+    // 如果对应长度 有依赖收集需要更新
+    depsMap.forEach((dep, key) => {
+      if (key === 'length' || key > newValue) { // 如果更改的长度小于收集的索引，那么这个索引也需要重新触发effect重新执行
+        add(dep)
+      }
+    })
+  }else{
+    
+  }
 }
