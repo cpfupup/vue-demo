@@ -2,3 +2,7 @@
 export const enum TrackOptypes {
   GET
 }
+export const enum TriggerOpTypes{
+  ADD,
+  SET
+}

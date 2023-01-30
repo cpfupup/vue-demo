@@ -3,8 +3,8 @@
 // 是否为深度
 
 import { extend, haschanged, hasOwn, isArray, isIntegerKey, isObject } from "@vue/shared"
-import { track } from "./effect"
-import { TrackOptypes } from "./operators"
+import { track,trigger } from "./effect"
+import { TrackOptypes, TriggerOpTypes } from "./operators"
 import { reactive, readonly } from "./reactive"
 
 
@@ -68,8 +68,10 @@ function createSetter(shallow = false) {// 拦截设置功能
     // 我们要区分是新增还是修改的 vue2中无法监控更改索引，无法监控数组的长度变化 -》hack的方法 需要特殊的处理
     if (!hadKey) {
       //新增
+      trigger(target,TriggerOpTypes.ADD,key,value)
     } else if (haschanged(oldValue, value)) {
       //修改
+      trigger(target,TriggerOpTypes.SET,key,value,oldValue)
     }
 
     return result
