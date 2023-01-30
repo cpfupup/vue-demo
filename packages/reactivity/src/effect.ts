@@ -1,4 +1,5 @@
-import { isArray } from "@vue/shared";
+import { isArray, isIntegerKey } from "@vue/shared";
+import { TriggerOpTypes } from "vue";
 
 let uid = 0; // effect的唯一标识
 let activeEffect // 存储当前的effect
@@ -57,11 +58,14 @@ export function effect(fn, options: any = {}) { // 第一个参数为要运行�
 
   return effect;
 }
+
+//找属性对应的effect 让其执行（数组，对象）
 export function trigger(target, type, key?, newValue?, oldValue?) {
   // 如果这个属性没有收集过effect，不需要任何操作
   const depsMap = targetMap.get(target)
   if (!depsMap) return
-  const effects = new Set()
+  const effects = new Set()//这里对effect去重了
+
 
   const add = (effectsToAdd) => {
     if (effectsToAdd) {
@@ -78,7 +82,20 @@ export function trigger(target, type, key?, newValue?, oldValue?) {
         add(dep)
       }
     })
-  }else{
-    
+  } else {
+    //可能是对象
+    if (key !== undefined) { // 之前已经做过是否为新增的判断，这里为修改
+      add(depsMap.get(key))
+    }
+
+    //如果修改数组中的某一个索引
+    switch (type) {
+      case TriggerOpTypes.ADD:
+        if (isArray(target) && isIntegerKey(key)) { // 修改的是数组并且更改的是索引就触发长度的更新
+          add(depsMap.get('length'));
+        }
+    }
   }
+
+  effects.forEach((effect: any) => effect())
 }
