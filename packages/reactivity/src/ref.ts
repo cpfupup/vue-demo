@@ -2,7 +2,7 @@
 
 import { haschanged, isArray, isObject } from "@vue/shared";
 import { track, trigger } from "./effect";
-import { TrackOptypes, TriggerOpTypes } from "./operators";
+import { TrackOpTypes, TriggerOpTypes } from "./operators";
 import { reactive } from "./reactive";
 
 const convert = (val) => isObject(val) ? reactive(val) : val
@@ -14,7 +14,7 @@ class RefImpl {
     this._value = shallow ? rawValue : convert(rawValue)//如果是深度 需要把里面都变成响应式
   }
   get value() {
-    track(this, TrackOptypes.GET, 'value');
+    track(this, TrackOpTypes.GET, 'value');
     return this._value
   }
   set value(newValue) {
