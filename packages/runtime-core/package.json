@@ -1,0 +1,17 @@
+{
+  "name": "@vue/runtime-core",
+  "version": "1.0.0",
+  "_main": "node端默认引用main",
+  "main": "index.js",
+  "_module": "es模块或者webpack引用module",
+  "module": "dist/runtime-core.esm-bundler.js",
+  "license": "MIT",
+  "buildOptions": {
+    "_name": "希望我们全局名字为VueReactivity",
+    "name": "VueRuntimeCore",
+    "_formats": "",
+    "formats": [
+      "esm-bundler"
+    ]
+  }
+}

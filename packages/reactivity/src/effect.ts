@@ -1,5 +1,5 @@
 import { isArray, isIntegerKey } from "@vue/shared";
-import { TriggerOpTypes } from "vue";
+import { TriggerOpTypes } from "./operators";
 
 let uid = 0; // effect的唯一标识
 let activeEffect // 存储当前的effect
