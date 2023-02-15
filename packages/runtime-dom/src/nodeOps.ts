@@ -1,3 +1,4 @@
+//元素节点操作
 export const nodeOps = {
   //createElement, 不同的平台创建元素方式不同
 
