@@ -8,7 +8,7 @@ import { patchStyle } from "./modules/style";
 export const pathProp = (el, key, prevValue, nextValue) => {
   switch (key) {
     case 'class':
-      patchClass(el, nextValue)
+      patchClass(el, nextValue) //比对属性
       break;
     case 'style':
       patchStyle(el, prevValue, nextValue)
