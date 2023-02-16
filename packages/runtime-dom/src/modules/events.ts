@@ -1,6 +1,6 @@
-export const patchEvent = (el, key, value) => {
-  //对函数的缓存
-  const invokers = el._vel || (el._vei = {})
+export const patchEvent = (el, key, value) => { //vue指令 删除和添加
+  //对函数的缓存 
+  const invokers = el._vei || (el._vei = {})
   const exists = invokers[key]; // 如果不存在
   if (value && exists) { //需要绑定事件 而且还存在的情况下
     exists.value = value

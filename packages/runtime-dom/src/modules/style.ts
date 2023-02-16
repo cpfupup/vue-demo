@@ -1,9 +1,9 @@
 export const patchStyle = (el, prev, next) => {
-  const style = el.style;
+  const style = el.style;//获取样式
   if (next == null) {
     el.removeAttribute('style')
   } else {
-    //老的里新的有没有
+    //老的里有 新的没有  需要删除
     if (prev) {
       for (let key in prev) {
         if (next[key] == null) {
