@@ -15,6 +15,7 @@ export const createVNode = (type, props, children = null) => {//type 可以是�
     type,
     props,
     children,
+    component: null,//存放组件对应的实例
     el: null,//将虚拟节点和真实节点对应起来
     key: props && props.key, //如果拥有key就用key来做diff算法
     shapeFlag//判断出当前自己的类型和儿子的类型
