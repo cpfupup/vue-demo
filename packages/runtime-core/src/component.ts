@@ -1,4 +1,5 @@
 import { shapeFlags } from "packages/shared/src/shapeFlag";
+import { PublicInstanceProxyHandlers } from "./componentPublicInstanceProxyHandlers";
 
 //组件中所有的方法
 export function createComponentInstance(vnode) {
@@ -34,12 +35,13 @@ export function setupComponent(instance) {
 }
 function setupStatefulComponent(instance) {
   //代理 传递给render函数的参数
+  instance.proxy = new Proxy(instance.ctx, PublicInstanceProxyHandlers as any)//创造一个公共实例的代理函数
   //获取组件的类型 拿到组件的setup方法
-  let  Component  = instance.type;
+  let Component = instance.type;
   let { setup } = Component;
-  let  setupConText = createSetupContext(instance)
-  setup(instance.prpos,setupConText)//instance中props attrs slots emit expose会被提取出来，因为在开发过程中会使用这些属性
-  Component.render()
+  let setupConText = createSetupContext(instance)
+  setup(instance.prpos, setupConText)//instance中props attrs slots emit expose会被提取出来，因为在开发过程中会使用这些属性
+  Component.render(instance.proxy)
 }
 function createSetupContext(instance) {
   return {
@@ -50,3 +52,7 @@ function createSetupContext(instance) {
     expose: () => { }
   }
 }
+
+//instance 表示组件的状态 各种各样的状态 组件的相关信息
+//context就四个参数 是为了开发时使用的
+//proxy主要是为了取值方便
