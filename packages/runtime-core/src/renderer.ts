@@ -1,14 +1,25 @@
+import { effect } from "@vue/reactivity";
 import { shapeFlags } from "packages/shared/src/shapeFlag";
 import { createAppAPI } from "./apiCreateApp"
 import { createComponentInstance, setupComponent } from "./component";
 
 export function createRenderer(rendererOptions) { //告诉core 怎么渲染
+  const setupRunderEfect = (instance) => {
+    // 需要创建一个effect  在effect中调用render方法 这样render方法中拿到的数据会收集effect，属性更新时effect重新执行
 
+    effect(function componentEffect() { // 每个组件都有一个effect，vue3是组件级更新，数据变化会重新执行对应组件的effect
+      if (!instance.isMounted) {
+        let proxyToUse = instance.proxy
+        instance.render.call(proxyToUse, proxyToUse)
+        instance.isMounted = true;
+      } else {
+        //更新逻辑
+      }
+    })
+  }
   const mountComponent = (initialVNode, container) => { //初始化节点的方法
     //组件的渲染流程 最核心的就是调用 setup拿到返回值 获得render函数返回的结果来进行渲染
-    const retupRunderEfect = () => {
 
-    }
     //1.先有实例
     const instance = initialVNode.component = createComponentInstance(initialVNode) //通过createComponent来创建实例挂载到initialVNode.component上
 
@@ -16,7 +27,7 @@ export function createRenderer(rendererOptions) { //告诉core 怎么渲染
     setupComponent(instance)
     // 3.创建一个effect 让render函数执行
 
-    retupRunderEfect()
+    setupRunderEfect(instance)
   }
   const processComponent = (n1, n2, container) => {
     if (n1 == null) { //组件没有上一次的虚拟节点 进行初始化
