@@ -4,13 +4,14 @@ import { createAppAPI } from "./apiCreateApp"
 import { createComponentInstance, setupComponent } from "./component";
 
 export function createRenderer(rendererOptions) { //告诉core 怎么渲染
-  const setupRunderEfect = (instance) => {
+  const setupRunderEfect = (instance, container) => {
     // 需要创建一个effect  在effect中调用render方法 这样render方法中拿到的数据会收集effect，属性更新时effect重新执行
 
     effect(function componentEffect() { // 每个组件都有一个effect，vue3是组件级更新，数据变化会重新执行对应组件的effect
       if (!instance.isMounted) {
         let proxyToUse = instance.proxy
-        instance.render.call(proxyToUse, proxyToUse)
+        let subTree = instance.render.call(proxyToUse, proxyToUse)
+        patch(null, subTree, container)
         instance.isMounted = true;
       } else {
         //更新逻辑
@@ -27,7 +28,7 @@ export function createRenderer(rendererOptions) { //告诉core 怎么渲染
     setupComponent(instance)
     // 3.创建一个effect 让render函数执行
 
-    setupRunderEfect(instance)
+    setupRunderEfect(instance, container)
   }
   const processComponent = (n1, n2, container) => {
     if (n1 == null) { //组件没有上一次的虚拟节点 进行初始化

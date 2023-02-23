@@ -2,7 +2,9 @@
 
 import { isArray, isObject, isString } from "@vue/shared";
 import { shapeFlags } from "packages/shared/src/shapeFlag";
-
+export function isVnode(vnode){
+  return vnode.__v_isVnode
+}
 //h('div',{style:{cokor:red}},'children') //h方法和createApp类似 h就是createVNode
 export const createVNode = (type, props, children = null) => {//type 可以是个'div'字符串 也可以是一个对象
   //可以根据type来区分是组件还是普通的元素
