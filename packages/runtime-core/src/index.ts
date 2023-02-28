@@ -4,3 +4,4 @@ export {
 export {
   h
 } from './h'
+export * from '@vue/reactivity'

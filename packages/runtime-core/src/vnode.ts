@@ -2,7 +2,7 @@
 
 import { isArray, isObject, isString } from "@vue/shared";
 import { shapeFlags } from "packages/shared/src/shapeFlag";
-export function isVnode(vnode){
+export function isVnode(vnode) {
   return vnode.__v_isVnode
 }
 //h('div',{style:{cokor:red}},'children') //h方法和createApp类似 h就是createVNode
@@ -35,4 +35,10 @@ function noremallizeChildren(vnode, children) {
     type = shapeFlags.TEXT_CHILDREN
   }
   vnode.shapeFlag = vnode.shapeFlag | type
+}
+
+export const Text = Symbol('Text')
+export function normalizeVNode(child) {
+  if (isObject(child)) return child;
+  return createVNode(Text,null,String(child))
 }

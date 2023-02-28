@@ -12,6 +12,7 @@ export const pathProp = (el, key, prevValue, nextValue) => {
       break;
     case 'style':
       patchStyle(el, prevValue, nextValue)
+      break;
     default:
       //如果不是事件 才是属性
       if (/^on[^a-z]/.test(key)) {
