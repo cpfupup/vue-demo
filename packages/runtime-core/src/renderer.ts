@@ -16,6 +16,7 @@ export function createRenderer(rendererOptions) { // 告诉core 怎么渲染
     createComment: hostCreateComment,
     setText: hostSetText,
     setElementText: hostSetElementText,
+    nextSibling: hostNextSibling
   } = rendererOptions
 
 
@@ -39,6 +40,10 @@ export function createRenderer(rendererOptions) { // 告诉core 怎么渲染
         // ts 一周
         // 组件库
         // 更新逻辑
+        const prevTree = instance.subTree;
+        let proxyToUse = instance.proxy;
+        const nextTree = instance.render.call(proxyToUse, proxyToUse)
+        patch(prevTree, nextTree, container)
       }
     }, {
       scheduler: queueJob
@@ -88,31 +93,78 @@ export function createRenderer(rendererOptions) { // 告诉core 怎么渲染
     }
     hostInsert(el, container);
   }
+  const patchProps = (oldProps, newProps, el) => {
+    if (oldProps !== newProps) {
+      for (let key in newProps) {
+        const prev = oldProps[key]
+        const next = newProps[key];
+        if (prev !== next) {
+          hostPatchProp(el, key, prev, next)
+        }
+      }
+      for (const key in oldProps) {
+        if (!(key in newProps)) {
+          hostPatchProp(el, key, oldProps[key], null)
+        }
+      }
+    }
+  }
+
+  const patchChildren = (n1, n2, contsiner) => {
+    const c1 = n1.children // 新老儿子
+    const c2 = n1.children
+    // 老的有儿子新的没儿子  新的有儿子老的没儿子 新老都有儿子 新老都是文本
+  }
+  const patchElement = (n1, n2, contsiner) => {
+    //元素是相同节点
+    let el = (n2.el = n1.el)
+    //更新属性 更新儿子
+    const oldProps = n1.props || {}
+    const newProps = n2.props || {}
+    patchProps(oldProps, newProps, el)
+
+    patchChildren(n1, n2, contsiner)
+  }
   const processElement = (n1, n2, container) => {
     if (n1 == null) {
       mountElement(n2, container);
     } else {
       // 元素更新
+      patchElement(n1, n2, container)
     }
   }
   //----------------- 处理元素-----------------
 
   // -----------------文本处理-----------------
-  const processText = (n1, n2, container) => {
+  const processText = (n1, n2, container, anchor) => {
     if (n1 == null) {
       hostInsert((n2.el = hostCreateText(n2.children)), container)
     }
   }
   // -----------------文本处理-----------------
-  const patch = (n1, n2, container) => {
+  const isSameVNodeType = (n1, n2) => {
+    return n1.type === n2.type && n1.key === n2.key
+  }
+
+  const unmount = (n1) => { // 如果是组件要调用组件的生命周期
+    hostRemove(n1.el)
+    n1 = null // 重新渲染n2 对应的内容
+  }
+
+  const patch = (n1, n2, container, anchor = null) => {
     // 针对不同类型 做初始化操作
     const { shapeFlag, type } = n2;
+    if (n1 && isSameVNodeType(n1, n2)) {
+      //把以前的删掉 换成n2
+      anchor = hostNextSibling(n1.el)
+      unmount(n1)
+    }
     switch (type) {
       case Text:
-        processText(n1, n2, container);
+        processText(n1, n2, container, anchor);
         break;
       default:
-        
+
         if (shapeFlag & shapeFlags.ELEMENT) {
           processElement(n1, n2, container);
         } else if (shapeFlag & shapeFlags.STATEFUL_COMPONENT) {
