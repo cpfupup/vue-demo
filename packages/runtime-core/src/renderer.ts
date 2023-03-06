@@ -117,7 +117,7 @@ export function createRenderer(rendererOptions) { // 告诉core 怎么渲染
         let e1 = c1.length - 1;
         let e2 = c2.length - 1;
 
-        // 尽可能较少比对的区域
+        // 尽可能减少比对的区域
 
         // sync from start 从头开始一个个比 遇到不同的就停止了
         while (i <= e1 && i <= e2) {
